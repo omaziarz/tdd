@@ -8,6 +8,7 @@ on:
 jobs:
   phpunit:
     runs-on: ubuntu-latest
+    name: RUN TESTS
     steps:
       - uses: actions/checkout@v1
       # For YAML Actions, use v1 or later
@@ -15,12 +16,24 @@ jobs:
         with:
           # If there isn't a PHPUnit config, specify files or directories to test
           command: tests/
+  phpinsights:
+        needs: phpunit
+        runs-on: ubuntu-latest
+        name: RUN CHECK INSIGHTS
+        steps:
+          - uses: actions/checkout@v2
+          - uses: shivammathur/setup-php@v1
+            with:
+                php-version: 7.4.3
+          - run: composer install --prefer-dist --no-progress --no-suggest
+          - run: vendor/bin/phpinsights --format=github-action
   deploy:
-    needs: phpunit
+    needs: [phpunit, phpinsights]
     runs-on: ubuntu-latest
+    name: DEPLOY APP
     steps:
       - name: Checkout
         uses: actions/checkout@v1
 
-      - name: Say hello
+      - name: RUN DEPLOY FILE
         run: ./deploy.sh
