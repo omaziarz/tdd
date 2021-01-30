@@ -10,7 +10,7 @@ class Toto
         $this->name = $name;
     }
 
-    public function hello()
+    public function hello(): void
     {
         echo 'hello ' . $this->name;
     }
