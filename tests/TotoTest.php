@@ -6,6 +6,6 @@ class TotoTest extends TestCase
 {
     public function test1egal1()
     {
-        $this->assertEquals(2, 1);
+        $this->assertEquals(1, 1);
     }
 }
