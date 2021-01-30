@@ -3,7 +3,7 @@ name: PHP TESTS
 on:
   push:
     branches:
-      - master
+      - main
 
 jobs:
   phpunit:
