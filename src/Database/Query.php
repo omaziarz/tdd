@@ -1,5 +1,7 @@
 <?php
 
+namespace App\Database;
+
 class Query
 {
   //private \PDO $conn;
