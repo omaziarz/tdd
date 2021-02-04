@@ -12,7 +12,7 @@ class QueryTest extends TestCase
       ->table('table')
       ->where('conditionA', '>', 'conditionB')
       ->getSelectString();
-    $this->assertEquals('SELECT a FROM table WHERE conditionA > condtionB', $qString);
+    $this->assertEquals('SELECT a FROM table WHERE conditionA > :0', $qString);
   }
 
   public function testSelectHandlesNoSelect() {
@@ -21,7 +21,7 @@ class QueryTest extends TestCase
       ->table('table')
       ->where('conditionA', '>', 'conditionB')
       ->getSelectString();
-    $this->assertEquals('SELECT * FROM table WHERE conditionA > condtionB', $qString);
+    $this->assertEquals('SELECT * FROM table WHERE conditionA > :0', $qString);
   }
 
   public function testUpdateQuery() {
@@ -31,7 +31,7 @@ class QueryTest extends TestCase
       ->insertValue('jambon', 'polonais')
       ->where('jambon', '=', 'espagnol')
       ->getUpdateString();
-    $this->assertEquals('UPDATE test SET jambon = :0 WHERE jambon = :1', $qString);
+    $this->assertEquals('UPDATE test SET jambon = :jambon WHERE jambon = :0', $qString);
   }
 
   public function testDeleteQuery() {
@@ -51,6 +51,6 @@ class QueryTest extends TestCase
       ->insertValue('b',  88888)
       ->insertValue('jambon', 'espagnol')
       ->getInsertString();
-    $this->assertEquals('INSERT INTO tables(a, b, jambon) VALUES(:a, :b, :jambon)', $qString);
+    $this->assertEquals('INSERT INTO test ( a, b, jambon ) VALUES ( :a, :b, :jambon )', $qString);
   }
 }

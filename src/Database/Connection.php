@@ -1,6 +1,5 @@
 <?php
 
-
 namespace App\Database;
 
 use PDO;
@@ -14,7 +13,7 @@ class Connection
         if (is_null(self::$instance)) {
             try {
                 $pdo = new PDO(
-                    'mysql:dbname='.getenv('MYSQL_DATABASE').';host=database',
+                    'mysql:dbname=binks-beat;host=database',
                     getenv('MYSQL_USER'),
                     getenv('MYSQL_PASSWORD'));
                 $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);

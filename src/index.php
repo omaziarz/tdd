@@ -1,6 +1,7 @@
 <?php
 namespace App;
 
+require 'vendor/autoload.php';
 use App\Database\Query;
 
 $query = new Query();

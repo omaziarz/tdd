@@ -1,10 +1,9 @@
 <?php
-
 namespace App\Database;
 
 class Query
 {
-  private \PDO $conn;
+  //private \PDO $conn;
 
   private string $table;
 
@@ -20,7 +19,7 @@ class Query
   private string $limit;
 
   function __construct() {
-    $this->conn = Connection::getInstance();
+    //$this->conn = Connection::getInstance();
   }
 
   private function writeSelect(&$queryString): void {
