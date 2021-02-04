@@ -2,9 +2,11 @@
 
 namespace App\Database;
 
+use Exception;
+
 class Query
 {
-  //private \PDO $conn;
+  private \PDO $conn;
 
   private string $table;
 
@@ -20,7 +22,7 @@ class Query
   private string $limit;
 
   function __construct() {
-    //$this->conn = Connection::getInstance();
+    $this->conn = Connection::getInstance();
   }
 
   private function writeSelect(&$queryString): void {
@@ -41,6 +43,8 @@ class Query
     if (isset($this->table)) {
       $queryString[] = 'FROM';
       $queryString[] = $this->table;
+    } else {
+      throw new \Exception('missing table');
     }
   }
   private function writeGroupBy(&$queryString): void {
@@ -74,6 +78,9 @@ class Query
     }
     $queryString[] = 'SET';
     $columns = [];
+    if (empty($this->insertValues)) {
+      throw new Exception('missing values to insert/update');
+    }
     foreach($this->insertValues as $key => $value) {
       $columns[] = $key . ' = :' . $key;
     }
@@ -96,6 +103,9 @@ class Query
       $queryString[] = '(';
     }
     $columns = [];
+    if (empty($this->insertValues)) {
+      throw new Exception('missing values to insert/update');
+    }
     foreach($this->insertValues as $key => $value) {
       $columns[] = $key;
     }
