@@ -14,16 +14,10 @@ class Connection
         if (is_null(self::$instance)) {
             try {
                 $pdo = new PDO(
-<<<<<<< HEAD
                     'mysql:dbname=tddtestoliwier;host=db4free.net',
-                  'oliwier',
-                    'oliwier123');
-=======
-                    'mysql:dbname=binks-beat;host=database',
-                    getenv('MYSQL_USER'),
-                    getenv('MYSQL_PASSWORD')
+                    'oliwier',
+                    'oliwier123'
                 );
->>>>>>> e47c5e009bea04e51907d25b0fe9966025322e11
                 $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
                 $pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_OBJ);
 
