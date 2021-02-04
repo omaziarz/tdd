@@ -2,8 +2,6 @@
 
 namespace App\Database;
 
-use Exception;
-
 class Query
 {
     private \PDO $conn;
@@ -222,5 +220,4 @@ class Query
             $queryString[] = $this->limit;
         }
     }
-    
 }
