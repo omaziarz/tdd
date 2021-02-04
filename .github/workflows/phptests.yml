@@ -13,10 +13,7 @@ jobs:
       - uses: actions/checkout@v1
       # For YAML Actions, use v1 or later
       - run: composer install
-      - uses: pxgamer/phpunit-action@master
-        with:
-          # If there isn't a PHPUnit config, specify files or directories to test
-          command: tests/
+      - run: ./vendor/bin/phpunit tests/QueryTest.php
   phpinsights:
         needs: phpunit
         runs-on: ubuntu-latest
