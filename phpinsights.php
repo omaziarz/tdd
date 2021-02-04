@@ -53,6 +53,7 @@ return [
     'exclude' => [
         'phpinsights.php',
         'hook.php',
+        'composer.lock'
     ],
 
     'add' => [
