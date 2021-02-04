@@ -24,7 +24,7 @@ class Query
   }
 
   private function writeSelect(&$queryString): void {
-    if (isset($this->select)) {
+    if (isset($this->select) && !empty($this->select)) {
       $queryString[] = join(', ', $this->select);
     } else {
       $queryString[] = '*';
