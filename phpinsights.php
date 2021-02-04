@@ -109,10 +109,10 @@ return [
     */
 
     'requirements' => [
-           'min-quality' => 95,
+           'min-quality' => 20,
            'min-complexity' => 0,
-           'min-architecture' => 95,
-           'min-style' => 95,
+           'min-architecture' => 20,
+           'min-style' => 20,
         //        'disable-security-check' => false,
     ],
 
