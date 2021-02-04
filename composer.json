@@ -20,7 +20,6 @@
         }
     },
     "require": {
-        "nunomaduro/phpinsights": "^1.14",
-      "ext-pdo": "*"
+        "nunomaduro/phpinsights": "^1.14"
     }
 }

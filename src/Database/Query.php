@@ -1,8 +1,8 @@
 <?php
-namespace App\Database;
 
 class Query
 {
+  //private \PDO $conn;
 
   private string $table;
 
@@ -16,6 +16,10 @@ class Query
 
   private string $groupBy;
   private string $limit;
+
+  function __construct() {
+    //$this->conn = Connection::getInstance();
+  }
 
   private function writeSelect(&$queryString): void {
     if (isset($this->select)) {
@@ -102,6 +106,51 @@ class Query
     $queryString[] = join(', ', $columns);
     $queryString[] = ')';
     return $queryString = join(' ', $queryString);
+  }
+
+  function get() {
+    $statement = $this->conn->prepare($this->getSelectString());
+    foreach ($this->whereParams as $key => $value) {
+      $statement->bindParam(':'.$key, $this->whereParams[$key]);
+    }
+    if ($statement->execute()) {
+      return $statement->fetchAll();
+    }
+    return 'Error with query';
+  }
+
+  function delete() {
+    $statement = $this->conn->prepare($this->getDeleteString());
+    foreach ($this->whereParams as $key => $value) {
+      $statement->bindParam(':'.$key, $this->whereParams[$key]);
+    }
+    return $statement->execute();
+  }
+
+  function insertValue(string $column, $value) {
+    $this->insertValues[$column] = $value;
+    return $this;
+  }
+
+  function update() {
+    $statement = $this->conn->prepare($this->getUpdateString());
+    foreach ($this->insertValues as $key => $value) {
+      $statement->bindParam(':' . $key, $this->insertValues[$key]);
+    }
+    foreach ($this->whereParams as $key => $value) {
+      $statement->bindParam(':'.$key, $this->whereParams[$key]);
+    }
+
+    return $statement->execute();
+  }
+
+  function insert() {
+    $statement = $this->conn->prepare($this->getInsertString());
+
+    foreach ($this->insertValues as $key => $value) {
+      $statement->bindParam(':' . $key, $this->insertValues[$key]);
+    }
+    return $statement->execute();
   }
 
   function select(string $columns): self
