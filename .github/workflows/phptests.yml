@@ -24,7 +24,7 @@ jobs:
             with:
                 php-version: 8.0.0
           - run: composer install --prefer-dist --no-progress --no-suggest
-          - run: vendor/bin/phpinsights -n --ansi --format=github-action
+          - run: vendor/bin/phpinsights --no-interaction --disable-security-check
   deploy:
     needs: [phpunit, phpinsights]
     runs-on: ubuntu-latest
