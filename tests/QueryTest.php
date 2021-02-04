@@ -39,8 +39,8 @@ class QueryTest extends TestCase
     $qString = $query
       ->table('test')
       ->where('jambon', '=', 'parme')
-      ->delete();
-    $this->assertEquals('DELETE FROM test WHERE jambon = :0');
+      ->getDeleteString();
+    $this->assertEquals('DELETE FROM test WHERE jambon = :0', $qString);
   }
 
   public function testInsertQuery() {
@@ -50,7 +50,7 @@ class QueryTest extends TestCase
       ->insertValue('a', 99999)
       ->insertValue('b',  88888)
       ->insertValue('jambon', 'espagnol')
-      ->insert();
+      ->getInsertString();
     $this->assertEquals('INSERT INTO tables(a, b, jambon) VALUES(:a, :b, :jambon)', $qString);
   }
 }
