@@ -1,7 +1,7 @@
 <?php
 
 
-namespace App\Core\Database;
+namespace App\Database;
 
 use PDO;
 use Throwable;
