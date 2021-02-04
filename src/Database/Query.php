@@ -2,6 +2,8 @@
 
 namespace App\Database;
 
+use Exception;
+
 class Query
 {
     private \PDO $conn;
@@ -21,6 +23,7 @@ class Query
 
     public function __construct()
     {
+      $this->conn = Connection::getInstance();
     }
 
     public function getUpdateString(): string
@@ -31,6 +34,9 @@ class Query
         }
         $queryString[] = 'SET';
         $columns = [];
+        if (empty($this->insertValues)) {
+          throw new Exception('missing values to insert/update');
+        }
         foreach ($this->insertValues as $key => $value) {
             $columns[] = $key . ' = :' . $key;
         }
@@ -55,6 +61,9 @@ class Query
             $queryString[] = '(';
         }
         $columns = [];
+        if (empty($this->insertValues)) {
+          throw new Exception('missing values to insert/update');
+        }
         foreach ($this->insertValues as $key => $value) {
             $columns[] = $key;
         }
@@ -182,7 +191,7 @@ class Query
 
     private function writeSelect(array &$queryString): void
     {
-        if (isset($this->select)) {
+        if (isset($this->select) && !empty($this->select)) {
             $queryString[] = join(', ', $this->select);
         } else {
             $queryString[] = '*';
@@ -202,6 +211,8 @@ class Query
         if (isset($this->table)) {
             $queryString[] = 'FROM';
             $queryString[] = $this->table;
+        }else {
+          throw new Exception('missing table');
         }
     }
 

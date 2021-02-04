@@ -7,7 +7,7 @@ use Throwable;
 
 class Connection
 {
-    private static PDO $instance;
+    private static $instance;
 
     public static function getInstance(): PDO
     {
