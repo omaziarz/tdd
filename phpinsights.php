@@ -70,7 +70,10 @@ return [
         PHP_CodeSniffer\Standards\PSR2\Sniffs\Methods\FunctionClosingBraceSniff::class,
         SlevomatCodingStandard\Sniffs\Arrays\DisallowImplicitArrayCreationSniff::class,
         SlevomatCodingStandard\Sniffs\ControlStructures\DisallowEmptySniff::class,
-        PhpCsFixer\Fixer\Basic\BracesFixer::class
+        PhpCsFixer\Fixer\Basic\BracesFixer::class,
+        PHP_CodeSniffer\Standards\Generic\Sniffs\Formatting\SpaceAfterNotSniff::class
+
+#
     ],
 
     'config' => [
@@ -87,6 +90,9 @@ return [
             'lineLimit' => 160,
             'absoluteLineLimit' => 170,
             'ignoreComments' => true,
+        ],
+        \ObjectCalisthenics\Sniffs\Files\FunctionLengthSniff::class => [
+            'maxLength' => 80,
         ]
     ],
 
