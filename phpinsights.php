@@ -52,7 +52,7 @@ return [
 
     'exclude' => [
         'phpinsights.php',
-        'hook.php'
+        'hook.php',
     ],
 
     'add' => [
@@ -62,14 +62,32 @@ return [
     ],
 
     'remove' => [
+        NunoMaduro\PhpInsights\Domain\Metrics\Complexity\Complexity::class,
         NunoMaduro\PhpInsights\Domain\Insights\ForbiddenNormalClasses::class,
         NunoMaduro\PhpInsights\Domain\Insights\Composer\ComposerMustBeValid::class,
         \PhpCsFixer\Fixer\StringNotation\SingleQuoteFixer::class,
         SlevomatCodingStandard\Sniffs\TypeHints\DeclareStrictTypesSniff::class,
-        PHP_CodeSniffer\Standards\PSR2\Sniffs\Methods\FunctionClosingBraceSniff::class
+        PHP_CodeSniffer\Standards\PSR2\Sniffs\Methods\FunctionClosingBraceSniff::class,
+        SlevomatCodingStandard\Sniffs\Arrays\DisallowImplicitArrayCreationSniff::class,
+        SlevomatCodingStandard\Sniffs\ControlStructures\DisallowEmptySniff::class,
+        PhpCsFixer\Fixer\Basic\BracesFixer::class
     ],
 
     'config' => [
+        \NunoMaduro\PhpInsights\Domain\Insights\CyclomaticComplexityIsHigh::class => [
+            'maxComplexity' => 500,
+        ],
+        \ObjectCalisthenics\Sniffs\Files\ClassTraitAndInterfaceLengthSniff::class => [
+            'maxLength' => 400,
+        ],
+        \ObjectCalisthenics\Sniffs\Metrics\MethodPerClassLimitSniff::class => [
+            'maxCount' => 50,
+        ],
+        \PHP_CodeSniffer\Standards\Generic\Sniffs\Files\LineLengthSniff::class => [
+            'lineLimit' => 160,
+            'absoluteLineLimit' => 170,
+            'ignoreComments' => true,
+        ]
     ],
 
     /*
@@ -84,11 +102,11 @@ return [
     */
 
     'requirements' => [
-       'min-quality' => 100,
-       'min-complexity' => 100,
-       'min-architecture' => 100,
-       'min-style' => 100,
-//        'disable-security-check' => false,
+           'min-quality' => 95,
+        //    'min-complexity' => 100,
+           'min-architecture' => 95,
+           'min-style' => 95,
+        //        'disable-security-check' => false,
     ],
 
 ];
