@@ -21,8 +21,8 @@ class Connection
                 $pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_OBJ);
 
                 self::$instance = $pdo;
-            } catch (Throwable $th) {
-                die('connection failed ' . $th . PHP_EOL);
+            } catch (Throwable $throwable) {
+                die('connection failed ' . $throwable . PHP_EOL);
             }
         }
         return self::$instance;

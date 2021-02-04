@@ -23,66 +23,51 @@ class Query
     $this->conn = Connection::getInstance();
   }
 
-  function get()
-  {
-    $queryString[] = 'SELECT';
-    if (isset($this->select) && !empty($this->select)) {
+  private function writeSelect(&$queryString): void {
+    if (isset($this->select)) {
       $queryString[] = join(', ', $this->select);
     } else {
       $queryString[] = '*';
     }
+  }
 
-    if (isset($this->table)) {
-      $queryString[] = 'FROM';
-      $queryString[] = $this->table;
-    }
-
+  private function writeWhere(&$queryString): void {
     if ($this->where) {
       $queryString[] = 'WHERE';
       $queryString[] = join(' ', $this->where);
     }
+  }
+  private function writeTable(&$queryString): void {
+    if (isset($this->table)) {
+      $queryString[] = 'FROM';
+      $queryString[] = $this->table;
+    }
+  }
+  private function writeGroupBy(&$queryString): void {
     if (isset($this->groupBy)) {
       $queryString[] = 'GROUP BY';
       $queryString[] = $this->groupBy;
     }
+  }
+  private function writeLimit(&$queryString): void {
     if (isset($this->limit)) {
       $queryString[] = 'LIMIT';
       $queryString[] = $this->limit;
     }
-
-    $queryString = implode(' ', $queryString);
-    $statement = $this->conn->prepare($queryString);
-    foreach ($this->whereParams as $key => $value) {
-      $statement->bindParam(':'.$key, $this->whereParams[$key]);
-    }
-    if ($statement->execute()) return $statement->fetchAll();
-    return 'Error with query';
   }
 
-  function delete() {
-    $queryString[] = 'DELETE';
-    if (isset($this->table)) {
-      $queryString[] = 'FROM';
-      $queryString[] = $this->table;
-    }
-    if ($this->where) {
-      $queryString[] = 'WHERE';
-      $queryString[] = join(' ', $this->where);
-    }
-    $queryString = implode(' ', $queryString);
-    $statement = $this->conn->prepare($queryString);
-    foreach ($this->whereParams as $key => $value) {
-      $statement->bindParam(':'.$key, $this->whereParams[$key]);
-    }
-    return $statement->execute();
+  function getSelectString()
+  {
+    $queryString[] = 'SELECT';
+    $this->writeSelect($queryString);
+    $this->writeTable($queryString);
+    $this->writeWhere($queryString);
+    $this->writeGroupBy($queryString);
+    $this->writeLimit($queryString);
+    return implode(' ', $queryString);
   }
 
-  function insertValue(string $column, $value) {
-    $this->insertValues[$column] = $value;
-    return $this;
-  }
-
-  function update() {
+  function getUpdateString() {
     $queryString[] = 'UPDATE';
     if (isset($this->table)) {
       $queryString[] = $this->table;
@@ -90,26 +75,21 @@ class Query
     $queryString[] = 'SET';
     $columns = [];
     foreach($this->insertValues as $key => $value) {
-      $columns[] = $key . ' = ' . ':'.$key;
+      $columns[] = $key . ' = :' . $key;
     }
     $queryString[] = join(', ', $columns);
-    if ($this->where) {
-      $queryString[] = 'WHERE';
-      $queryString[] = join(' ', $this->where);
-    }
-    $queryString = join(' ', $queryString);
-    $statement = $this->conn->prepare($queryString);
-    foreach ($this->insertValues as $key => $value) {
-      $statement->bindParam(':' . $key, $this->insertValues[$key]);
-    }
-    foreach ($this->whereParams as $key => $value) {
-      $statement->bindParam(':'.$key, $this->whereParams[$key]);
-    }
-
-    return $statement->execute();
+    $this->writeWhere($queryString);
+    return join(' ', $queryString);
   }
 
-  function insert() {
+  function getDeleteString() {
+    $queryString[] = 'DELETE';
+    $this->writeTable($queryString);
+    $this->writeWhere($queryString);
+    return join(' ', $queryString);
+  }
+
+  function getInsertString() {
     $queryString[] = 'INSERT INTO';
     if (isset($this->table)) {
       $queryString[] = $this->table;
@@ -127,8 +107,47 @@ class Query
     }
     $queryString[] = join(', ', $columns);
     $queryString[] = ')';
-    $queryString = join(' ', $queryString);
-    $statement = $this->conn->prepare($queryString);
+    return $queryString = join(' ', $queryString);
+  }
+
+  function get() {
+    $statement = $this->conn->prepare($this->getSelectString());
+    foreach ($this->whereParams as $key => $value) {
+      $statement->bindParam(':'.$key, $this->whereParams[$key]);
+    }
+    if ($statement->execute()) {
+      return $statement->fetchAll();
+    }
+    return 'Error with query';
+  }
+
+  function delete() {
+    $statement = $this->conn->prepare($this->getDeleteString());
+    foreach ($this->whereParams as $key => $value) {
+      $statement->bindParam(':'.$key, $this->whereParams[$key]);
+    }
+    return $statement->execute();
+  }
+
+  function insertValue(string $column, $value) {
+    $this->insertValues[$column] = $value;
+    return $this;
+  }
+
+  function update() {
+    $statement = $this->conn->prepare($this->getUpdateString());
+    foreach ($this->insertValues as $key => $value) {
+      $statement->bindParam(':' . $key, $this->insertValues[$key]);
+    }
+    foreach ($this->whereParams as $key => $value) {
+      $statement->bindParam(':'.$key, $this->whereParams[$key]);
+    }
+
+    return $statement->execute();
+  }
+
+  function insert() {
+    $statement = $this->conn->prepare($this->getInsertString());
 
     foreach ($this->insertValues as $key => $value) {
       $statement->bindParam(':' . $key, $this->insertValues[$key]);
@@ -142,20 +161,12 @@ class Query
     return $this;
   }
 
-  /**
-   * @param string $table
-   * @return mixed
-   */
   function table(string $table): self
   {
     $this->table = $table;
     return $this;
   }
 
-  /**
-   * @param string $left
-   * @param string $comparator
-   */
   function where(string $left, string $comparator, $right): self
   {
     if (empty($this->where)) {
@@ -182,9 +193,6 @@ class Query
     return $this;
   }
 
-  /**
-   * @param string $column
-   */
   function groupBy(string $column): self
   {
     $this->groupBy = $column;
